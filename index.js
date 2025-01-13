@@ -113,10 +113,14 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         throw `The points possible submitted is ${pointsPossible}, The points possible must be larger than 0`;
     }
 
+    // Loop through the learnerSubmissions array of objects data
     for (let i = 0; i < learnerSubmissions.length; i++) {
       let learnersId = learnerSubmissions[i].learner_id;
       let assignmentsId = learnerSubmissions[i].assignment_id;
+      let submissionDate = learnerSubmissions[i].submission.submitted_at;
       let submissionScore = learnerSubmissions[i].submission.score;
+
+      // console.log(submissionDate);
 
       // Checking if the LearnerSubmissions learner_id is not a number
       if (isNaN(learnersId)) throw `The learner_id is not a number`;
@@ -130,7 +134,36 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   } catch (error) {
     alert(error);
   }
-  const result = [
+  //==================================== Perform the data processing ====================================//
+  const filteredId = learnerSubmissions.filter((learnerSubmission, index, self) => {
+    return (
+      index ===
+      self.findIndex(
+        (learnersId) => learnersId.learner_id === learnerSubmission.learner_id
+      )
+    );
+  });
+  console.log(filteredId);
+  for (let i = 0; i < assignments.length; i++) {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    const year = today.getFullYear();
+
+    const todaysDateIs = `${year}-${month}-${day}`;
+    // console.log("Todays date is " + todaysDateIs);
+    let assigment_date = assignments[i].due_at;
+
+    if (assigment_date <= todaysDateIs) {
+      console.log("The assignment is on time");
+    }
+  }
+  // const newAssignmentDate = assignments.filter(
+  //   (assignment) => assignment.due_at >= new Date()
+  // );
+  //=====================================================================================================//
+  //=====================================================================================================//
+  const result1 = [
     {
       id: 125,
       avg: 0.985, // (47 + 150) / (50 + 150)
@@ -144,10 +177,11 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
       2: 0.833, // late: (140 - 15) / 150
     },
   ];
-
-  return result;
+  //=====================================================================================================//
+  return result1;
+  //=====================================================================================================//
 }
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+const result1 = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-// console.log(result);
+console.log(result1);
