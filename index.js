@@ -1,15 +1,16 @@
 console.log(`==================== index.js file ====================`);
-// The provided course information.
+//=============================== The provided course information ===============================//
 const CourseInfo = {
-  id: 451,
+  courseId: 451,
   name: "Introduction to JavaScript",
 };
+//================================================================================================//
 
-// The provided assignment group.
+//================================ The provided assignment group =================================//
 const AssignmentGroup = {
-  id: 12345,
-  name: "Fundamentals of JavaScript",
-  course_id: 451,
+  assignmentId: 12345,
+  asignmentName: "Fundamentals of JavaScript",
+  assignmentCourse_id: 451,
   group_weight: 25,
   assignments: [
     {
@@ -32,8 +33,9 @@ const AssignmentGroup = {
     },
   ],
 };
+//================================================================================================//
 
-// The provided learner submission data.
+//============================= The provided learner submission data =============================//
 const LearnerSubmissions = [
   {
     learner_id: 125,
@@ -76,9 +78,58 @@ const LearnerSubmissions = [
     },
   },
 ];
+//================================================================================================//
 
-function getLearnerData(course, ag, submissions) {
+//======================= The getLearnerData function to process the data ========================//
+function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   // here, we would process this data to achieve the desired result.
+  let { courseId, name } = courseInfo;
+  let { assignmentId, asignmentName, assignmentCourse_id, group_weight, assignments } =
+    assignmentGroup;
+
+  try {
+    // Checking if the course ID is not a number
+    if (isNaN(courseId)) throw `The course ID is not a number`;
+    // Checking if the assignmentId is not a number
+    if (isNaN(assignmentId)) throw `The assignmentId is not a number`;
+    // Checking if the assignmentGroup's assignmentCourse_id is not a number
+    if (isNaN(assignmentCourse_id)) throw `The assignmentCourse_id is not a number`;
+
+    // Checking if the courseInfo's courseID matches the assignmentGroup's assignmentCourse_id
+    if (courseId !== assignmentCourse_id) {
+      throw `The assignments course ID "${courseInfo.id}" does not match the Courses ID of "${assignmentGroup.course_id}"`;
+    }
+    // Checking if the points_possible in the assignments[] array does not = 0
+    for (let i = 0; i < assignments.length; i++) {
+      // Caching the array of assigments id
+      let assignmentId = assignments[i].id;
+      // Checking if the array of assignments ID is not a number
+      if (isNaN(assignmentId)) throw `The assignments ID's must be a number`;
+      // Caching the array of points_possible
+      let pointsPossible = assignments[i].points_possible;
+      // Checking if the array of points_possible is not a number
+      if (isNaN(pointsPossible)) throw `The points possible must be a number`;
+      if (pointsPossible < 1)
+        throw `The points possible submitted is ${pointsPossible}, The points possible must be larger than 0`;
+    }
+
+    for (let i = 0; i < learnerSubmissions.length; i++) {
+      let learnersId = learnerSubmissions[i].learner_id;
+      let assignmentsId = learnerSubmissions[i].assignment_id;
+      let submissionScore = learnerSubmissions[i].submission.score;
+
+      // Checking if the LearnerSubmissions learner_id is not a number
+      if (isNaN(learnersId)) throw `The learner_id is not a number`;
+      // Checking if the LearnerSubmissions assignment_id is not a number
+      if (isNaN(assignmentsId))
+        throw `The LearnerSubmissions assignment_id is not a number`;
+      // Checking if the LearnerSubmissions submited score is not a number
+      if (isNaN(submissionScore))
+        throw `The LearnerSubmissions submited score is not a number`;
+    }
+  } catch (error) {
+    alert(error);
+  }
   const result = [
     {
       id: 125,
@@ -99,4 +150,4 @@ function getLearnerData(course, ag, submissions) {
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-console.log(result);
+// console.log(result);
