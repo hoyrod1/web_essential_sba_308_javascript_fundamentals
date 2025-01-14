@@ -150,15 +150,10 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   });
   const learnerTestId1 = filteredId[0].learner_id;
   const learnerTestId2 = filteredId[1].learner_id;
-  // console.log(learnerTestId1);
-  // console.log(learnerTestId2);
-  // for (let i = 0; i < filteredId.length; i++) {
-  //   console.log(filteredId[i]);
-  // }
+
   const learner1 = learnerSubmissions.filter(
     (learnerSubmission) => learnerTestId1 === learnerSubmission.learner_id
   );
-  // console.log(learner1);
 
   const learner2 = learnerSubmissions.filter(
     (learnerSubmission) => learnerTestId2 === learnerSubmission.learner_id
@@ -178,45 +173,39 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const newAssignmentGroup = assignments.filter(
     (assignment) => assignment.due_at <= todaysDateIs
   );
-  //console.log(newAssignmentGroup);
+  // console.log(newAssignmentGroup);
   let pointsPossibleTotal = 0;
   for (let i = 0; i < newAssignmentGroup.length; i++) {
     const pointsPossible = newAssignmentGroup[i].points_possible;
     pointsPossibleTotal += pointsPossible;
   }
 
+  const results = [];
+  const testResults = {};
   let totalScore = 0;
+  let avg = 0;
+  let assignmentID;
+  let assignmentPointsPossible;
   for (let i = 0; i < learner1.length; i++) {
-    const learnerSubmitted = learner1[i].submission.submitted_at;
     const learnerScore = learner1[i].submission.score;
     const dueDate = assignments[i].due_at;
-    //console.log(assignments[i].points_possible);
-    // console.log(learnerSubmitted);
+
     if (todaysDateIs > dueDate) {
+      assignmentID = assignments[i].id;
+      // console.log(assignmentID);
+      assignmentPointsPossible = assignments[i].points_possible;
       totalScore += learnerScore;
+      avg = totalScore / pointsPossibleTotal;
+      testResults[assignmentID] = learnerScore / assignmentPointsPossible;
     } else {
       continue;
     }
   }
   //===========================================================================//
-  // for (let i = 0; i < learnerSubmissions.length; i++) {
-  //   const learnerId = learnerSubmissions[i].learner_id;
-  //   if (learnerId === learnerTestId1) {
-  //     const learnerSubmitted = learnerSubmissions[i].submission.submitted_at;
-  //     const learnerScore = learnerSubmissions[i].submission.score;
-  //     console.log(learnerSubmitted);
-  //     console.log(i);
-  //     avg += learnerScore;
-  //   } else {
-  //     continue;
-  //   }
-  // }
+  testResults.id = learnerTestId1;
+  testResults.avg = avg;
   //===========================================================================//
-  // console.log(totalScore);
-  // console.log(pointsPossibleTotal);
-  let avg = totalScore / pointsPossibleTotal;
-  console.log(learnerTestId1);
-  console.log(avg);
+  results.push(testResults);
   //=====================================================================================================//
   // console.log(results);
   //=====================================================================================================//
@@ -235,10 +224,10 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     },
   ];
   //=====================================================================================================//
-  // return results;
+  return results;
   //=====================================================================================================//
 }
 
 const result1 = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-// console.log(result1);
+console.log(result1);
