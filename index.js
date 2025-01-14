@@ -82,10 +82,11 @@ const LearnerSubmissions = [
 
 //======================= The getLearnerData function to process the data ========================//
 function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
-  // here, we would process this data to achieve the desired result.
-  let { courseId, name } = courseInfo;
-  let { assignmentId, asignmentName, assignmentCourse_id, group_weight, assignments } =
+  //============== DESTRUCTURING THE courseInfo AND assignmentGroup ARRAY OF OBJECTS =============//
+  const { courseId, name } = courseInfo;
+  const { assignmentId, asignmentName, assignmentCourse_id, group_weight, assignments } =
     assignmentGroup;
+  //==============================================================================================//
 
   try {
     // Checking if the course ID is not a number
@@ -134,7 +135,11 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   } catch (error) {
     alert(error);
   }
-  //==================================== Perform the data processing ====================================//
+  //=====================================================================================================//
+
+  //=================================== Performing the data processing ==================================//
+  // filtering out each duplicate learnersSubmissions using the learner_id
+  // So I can isolate each individual learnersSubmission's ID
   const filteredId = learnerSubmissions.filter((learnerSubmission, index, self) => {
     return (
       index ===
@@ -143,25 +148,77 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
       )
     );
   });
-  console.log(filteredId);
-  for (let i = 0; i < assignments.length; i++) {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const year = today.getFullYear();
+  const learnerTestId1 = filteredId[0].learner_id;
+  const learnerTestId2 = filteredId[1].learner_id;
+  // console.log(learnerTestId1);
+  // console.log(learnerTestId2);
+  // for (let i = 0; i < filteredId.length; i++) {
+  //   console.log(filteredId[i]);
+  // }
+  const learner1 = learnerSubmissions.filter(
+    (learnerSubmission) => learnerTestId1 === learnerSubmission.learner_id
+  );
+  // console.log(learner1);
 
-    const todaysDateIs = `${year}-${month}-${day}`;
-    // console.log("Todays date is " + todaysDateIs);
-    let assigment_date = assignments[i].due_at;
+  const learner2 = learnerSubmissions.filter(
+    (learnerSubmission) => learnerTestId2 === learnerSubmission.learner_id
+  );
+  // console.log(learner2);
+  //=====================================================================================================//
 
-    if (assigment_date <= todaysDateIs) {
-      console.log("The assignment is on time");
+  //=====================================================================================================//
+  // CACHE THE DATE TO TEST IF THE ASSIGMENT IS DUE
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const year = today.getFullYear();
+  const todaysDateIs = `${year}-${month}-${day}`;
+
+  // THIS FILTERS AND RETURNS THE ASSIGNMENTS DUE BASED ON THE DATE
+  const newAssignmentGroup = assignments.filter(
+    (assignment) => assignment.due_at <= todaysDateIs
+  );
+  //console.log(newAssignmentGroup);
+  let pointsPossibleTotal = 0;
+  for (let i = 0; i < newAssignmentGroup.length; i++) {
+    const pointsPossible = newAssignmentGroup[i].points_possible;
+    pointsPossibleTotal += pointsPossible;
+  }
+
+  let totalScore = 0;
+  for (let i = 0; i < learner1.length; i++) {
+    const learnerSubmitted = learner1[i].submission.submitted_at;
+    const learnerScore = learner1[i].submission.score;
+    const dueDate = assignments[i].due_at;
+    //console.log(assignments[i].points_possible);
+    // console.log(learnerSubmitted);
+    if (todaysDateIs > dueDate) {
+      totalScore += learnerScore;
+    } else {
+      continue;
     }
   }
-  // const newAssignmentDate = assignments.filter(
-  //   (assignment) => assignment.due_at >= new Date()
-  // );
+  //===========================================================================//
+  // for (let i = 0; i < learnerSubmissions.length; i++) {
+  //   const learnerId = learnerSubmissions[i].learner_id;
+  //   if (learnerId === learnerTestId1) {
+  //     const learnerSubmitted = learnerSubmissions[i].submission.submitted_at;
+  //     const learnerScore = learnerSubmissions[i].submission.score;
+  //     console.log(learnerSubmitted);
+  //     console.log(i);
+  //     avg += learnerScore;
+  //   } else {
+  //     continue;
+  //   }
+  // }
+  //===========================================================================//
+  // console.log(totalScore);
+  // console.log(pointsPossibleTotal);
+  let avg = totalScore / pointsPossibleTotal;
+  console.log(learnerTestId1);
+  console.log(avg);
   //=====================================================================================================//
+  // console.log(results);
   //=====================================================================================================//
   const result1 = [
     {
@@ -178,10 +235,10 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     },
   ];
   //=====================================================================================================//
-  return result1;
+  // return results;
   //=====================================================================================================//
 }
 
 const result1 = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-console.log(result1);
+// console.log(result1);
