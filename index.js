@@ -151,8 +151,11 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const learnerTestId1 = filteredId[0].learner_id;
   const learnerTestId2 = filteredId[1].learner_id;
   //=====================================================================================================//
-  let learnerOne;
-  let learnerTwo;
+
+  //========================================== TO BE CONTINUED ==========================================//
+  // Create loop to programmatically assign the learners ID to a variable
+  // let learnerOne;
+  // let learnerTwo;
   // console.log(learnerTwo);
   // for (let i = 0; i < filteredId.length; i++) {
   //   console.log(filteredId[i].learner_id);
@@ -160,6 +163,8 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   //   // } else {
   //   // }
   // }
+  //=====================================================================================================//
+
   //=====================================================================================================//
   // Filtering through and retrieving all the data for the learner using the specific "learner_id"
   const learner1 = learnerSubmissions.filter(
@@ -172,7 +177,6 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const learner2 = learnerSubmissions.filter(
     (learnerSubmission) => learnerTestId2 === learnerSubmission.learner_id
   );
-  console.log(learner2);
   //=====================================================================================================//
 
   //=====================================================================================================//
@@ -189,7 +193,6 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const newAssignmentGroup = assignments.filter(
     (assignment) => assignment.due_at <= todaysDateIs
   );
-  console.log(newAssignmentGroup);
   //=====================================================================================================//
 
   //=====================================================================================================//
@@ -206,31 +209,45 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const results = [];
   const testResults1 = {};
   const testResults2 = {};
-  let totalScore = 0;
+  let totalScore1 = 0;
+  let totalScore2 = 0;
+  let totalScores2 = 0;
   let avg1 = 0;
+  let avg2 = 0;
   let assignmentId1;
+  let assignmentId2;
   let assignmentPointsPossible1;
+  let assignmentPointsPossible2;
+  let assignmentsPointsPossible2 = 0;
   //=====================================================================================================//
 
   //=====================================================================================================//
-  // learner1's for loop
+  // learner2's for loop
   // This for loop calculates the total average
   // And programmatically use the assignments ID's as the key and the average per test as the value
-  // for (let i = 0; i < learner1.length; i++) {
-  //   const learnerScore = learner1[i].submission.score;
-  //   const dueDate = assignments[i].due_at;
+  for (let i = 0; i < learner2.length; i++) {
+    const learner2Score = learner2[i].submission.score;
+    const learner2SubmissionDate = learner2[i].submission.submitted_at;
+    const dueDate = assignments[i].due_at;
 
-  //   if (todaysDateIs > dueDate) {
-  //     assignmentID = assignments[i].id;
-  //     // console.log(assignmentID);
-  //     assignmentPointsPossible = assignments[i].points_possible;
-  //     totalScore += learnerScore;
-  //     avg = totalScore / pointsPossibleTotal;
-  //     testResults1[assignmentID] = learnerScore / assignmentPointsPossible;
-  //   } else {
-  //     continue;
-  //   }
-  // }
+    if (todaysDateIs > dueDate) {
+      assignmentId2 = assignments[i].id;
+
+      assignmentPointsPossible2 = assignments[i].points_possible;
+      if (dueDate > learner2SubmissionDate) {
+        totalScore2 += learner2Score;
+        testResults2[assignmentId2] = learner2Score / assignmentPointsPossible2;
+      } else {
+        totalScore2 = learner2Score - 15;
+        testResults2[assignmentId2] = totalScore2 / 150;
+      }
+      totalScores2 += totalScore2;
+      assignmentsPointsPossible2 += assignmentPointsPossible2;
+      avg2 = totalScores2 / assignmentsPointsPossible2;
+    } else {
+      continue;
+    }
+  }
   //=====================================================================================================//
 
   //=====================================================================================================//
@@ -245,8 +262,8 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
       assignmentId1 = assignments[i].id;
       // console.log(assignmentID);
       assignmentPointsPossible1 = assignments[i].points_possible;
-      totalScore += learnerScore;
-      avg1 = totalScore / pointsPossibleTotal;
+      totalScore1 += learnerScore;
+      avg1 = totalScore1 / pointsPossibleTotal;
       testResults1[assignmentId1] = learnerScore / assignmentPointsPossible1;
     } else {
       continue;
@@ -262,8 +279,16 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   //=====================================================================================================//
 
   //=====================================================================================================//
+  // Adding the "id" key and the learner 1's "ID" as the value to the "testResults1" Object
+  testResults2.id = learnerTestId2;
+  // Adding the "avg" key and the learner 1's "average" as the value to the "testResults1" Object
+  testResults2.avg = avg2;
+  //=====================================================================================================//
+
+  //=====================================================================================================//
   // Pushing the "testResults1" Object to the "results" array
   results.push(testResults1);
+  results.push(testResults2);
   //=====================================================================================================//
   const result1 = [
     {
@@ -281,10 +306,10 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   ];
   //=====================================================================================================//
   // console.log(results);
-  // return results;
+  return results;
   //=====================================================================================================//
 }
 
 const totalResult = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-// console.log(totalResult);
+console.log(totalResult);
