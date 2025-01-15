@@ -239,7 +239,7 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
         testResults2[assignmentId2] = learner2Score / assignmentPointsPossible2;
       } else {
         totalScore2 = learner2Score - 15;
-        testResults2[assignmentId2] = totalScore2 / 150;
+        testResults2[assignmentId2] = totalScore2 / assignmentPointsPossible2;
       }
       totalScores2 += totalScore2;
       assignmentsPointsPossible2 += assignmentPointsPossible2;
