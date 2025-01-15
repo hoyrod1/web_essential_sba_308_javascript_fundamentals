@@ -150,15 +150,29 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   });
   const learnerTestId1 = filteredId[0].learner_id;
   const learnerTestId2 = filteredId[1].learner_id;
-
+  //=====================================================================================================//
+  let learnerOne;
+  let learnerTwo;
+  // console.log(learnerTwo);
+  // for (let i = 0; i < filteredId.length; i++) {
+  //   console.log(filteredId[i].learner_id);
+  //   // if (condition) {
+  //   // } else {
+  //   // }
+  // }
+  //=====================================================================================================//
+  // Filtering through and retrieving all the data for the learner using the specific "learner_id"
   const learner1 = learnerSubmissions.filter(
     (learnerSubmission) => learnerTestId1 === learnerSubmission.learner_id
   );
+  //=====================================================================================================//
 
+  //=====================================================================================================//
+  // Filtering through and retrieving all the data for the learner using the specific "learner_id"
   const learner2 = learnerSubmissions.filter(
     (learnerSubmission) => learnerTestId2 === learnerSubmission.learner_id
   );
-  // console.log(learner2);
+  console.log(learner2);
   //=====================================================================================================//
 
   //=====================================================================================================//
@@ -168,46 +182,88 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
   const day = today.getDate();
   const year = today.getFullYear();
   const todaysDateIs = `${year}-${month}-${day}`;
+  //=====================================================================================================//
 
+  //=====================================================================================================//
   // THIS FILTERS AND RETURNS THE ASSIGNMENTS DUE BASED ON THE DATE
   const newAssignmentGroup = assignments.filter(
     (assignment) => assignment.due_at <= todaysDateIs
   );
-  // console.log(newAssignmentGroup);
+  console.log(newAssignmentGroup);
+  //=====================================================================================================//
+
+  //=====================================================================================================//
+  // The points possible is added together to be used to get the average
   let pointsPossibleTotal = 0;
   for (let i = 0; i < newAssignmentGroup.length; i++) {
     const pointsPossible = newAssignmentGroup[i].points_possible;
     pointsPossibleTotal += pointsPossible;
   }
+  //=====================================================================================================//
 
+  //=====================================================================================================//
+  // Initialize the results array
   const results = [];
-  const testResults = {};
+  const testResults1 = {};
+  const testResults2 = {};
   let totalScore = 0;
-  let avg = 0;
-  let assignmentID;
-  let assignmentPointsPossible;
+  let avg1 = 0;
+  let assignmentId1;
+  let assignmentPointsPossible1;
+  //=====================================================================================================//
+
+  //=====================================================================================================//
+  // learner1's for loop
+  // This for loop calculates the total average
+  // And programmatically use the assignments ID's as the key and the average per test as the value
+  // for (let i = 0; i < learner1.length; i++) {
+  //   const learnerScore = learner1[i].submission.score;
+  //   const dueDate = assignments[i].due_at;
+
+  //   if (todaysDateIs > dueDate) {
+  //     assignmentID = assignments[i].id;
+  //     // console.log(assignmentID);
+  //     assignmentPointsPossible = assignments[i].points_possible;
+  //     totalScore += learnerScore;
+  //     avg = totalScore / pointsPossibleTotal;
+  //     testResults1[assignmentID] = learnerScore / assignmentPointsPossible;
+  //   } else {
+  //     continue;
+  //   }
+  // }
+  //=====================================================================================================//
+
+  //=====================================================================================================//
+  // learner1's for loop
+  // This for loop calculates the total average
+  // And programmatically use the assignments ID's as the key and the average per test as the value
   for (let i = 0; i < learner1.length; i++) {
     const learnerScore = learner1[i].submission.score;
     const dueDate = assignments[i].due_at;
 
     if (todaysDateIs > dueDate) {
-      assignmentID = assignments[i].id;
+      assignmentId1 = assignments[i].id;
       // console.log(assignmentID);
-      assignmentPointsPossible = assignments[i].points_possible;
+      assignmentPointsPossible1 = assignments[i].points_possible;
       totalScore += learnerScore;
-      avg = totalScore / pointsPossibleTotal;
-      testResults[assignmentID] = learnerScore / assignmentPointsPossible;
+      avg1 = totalScore / pointsPossibleTotal;
+      testResults1[assignmentId1] = learnerScore / assignmentPointsPossible1;
     } else {
       continue;
     }
   }
-  //===========================================================================//
-  testResults.id = learnerTestId1;
-  testResults.avg = avg;
-  //===========================================================================//
-  results.push(testResults);
   //=====================================================================================================//
-  // console.log(results);
+
+  //=====================================================================================================//
+  // Adding the "id" key and the learner 1's "ID" as the value to the "testResults1" Object
+  testResults1.id = learnerTestId1;
+  // Adding the "avg" key and the learner 1's "average" as the value to the "testResults1" Object
+  testResults1.avg = avg1;
+  //=====================================================================================================//
+
+  //=====================================================================================================//
+  // Pushing the "testResults1" Object to the "results" array
+  results.push(testResults1);
   //=====================================================================================================//
   const result1 = [
     {
@@ -224,10 +280,11 @@ function getLearnerData(courseInfo, assignmentGroup, learnerSubmissions) {
     },
   ];
   //=====================================================================================================//
-  return results;
+  // console.log(results);
+  // return results;
   //=====================================================================================================//
 }
 
-const result1 = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+const totalResult = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-console.log(result1);
+// console.log(totalResult);
